@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>异步请求，删除品牌</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body style="display:flex;justify-content: center;margin-top: 200px">
+<div style="width: 40%;background-color: #eaf3f3;border-radius:10px;display: flex;flex-direction: column;justify-content: center;box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);">
+    <table>
+        <tr>
+            <td>
+                <label for="id">
+                    品牌编号
+                </label>
+            </td>
+            <td><input name="id" id="id" type="text" value="" readonly></td>
+        </tr>
+    </table>
+    <p id="brand-id-display">品牌编号为</p>
+
+    <div style="padding-left: 290px;padding-bottom: 20px">
+        <input type="button" id="btn" value="删除" style="background-color: #167f92"/>
+    </div>
+</div>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    // 获取 URL 参数中的 id
+    function getQueryParams(url) {
+        const params = new URLSearchParams(new URL(url).search);
+        return params;
+    }
+
+    // 获取品牌编号
+    const queryParams = getQueryParams(window.location.href);
+    const brandId = queryParams.get('id');
+
+    // 设置输入框的值
+    document.getElementById("id").value = brandId;
+
+    // 显示品牌编号
+    document.getElementById("brand-id-display").innerText = `品牌编号为 ${brandId}`;
+
+    document.getElementById("btn").onclick = function () {
+        if (!brandId) {
+            alert("请输入品牌编号");
+            return;
+        }
+
+        axios({
+            method: 'delete',
+            url: `http://localhost:8080/delete`,
+            params: { id: brandId }
+        }).then(function (res) {
+            if (res.status === 200) {
+                alert('品牌删除成功');
+                location.href = "/brand.html";
+            } else {
+                alert('品牌删除失败');
+            }
+        }).catch(function (error) {
+            console.error('删除品牌时发生错误:', error);
+            alert('品牌删除失败');
+        });
+    }
+</script>
+</body>
+</html>
